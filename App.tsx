@@ -3,7 +3,7 @@ import { Roboto_400Regular, Roboto_700Bold, useFonts} from "@expo-google-fonts/r
 import { Center, GluestackUIProvider, Text } from '@gluestack-ui/themed';
 import { config } from './config/gluestack-ui.config';
 import { Loading } from '@components/Loading';
-import { SignIn } from '@screens/SignIn';
+import { SignUp } from '@screens/SignUp';
 
 
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
     <GluestackUIProvider config={config}>
     
       { fontsLoaded ? (
-        <SignIn />
+        <SignUp />
         ) :( 
           <Loading />
         )}

@@ -1,5 +1,9 @@
 import { Center, Heading, Image, Text, VStack, ScrollView } from "@gluestack-ui/themed"
 
+import { useNavigation } from "@react-navigation/native"
+
+import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
+
 import BackgroundImg from "@assets/background.png"
 import Logo from "@assets/logo.svg"
 
@@ -7,6 +11,12 @@ import { Input } from "@components/input"
 import { Button } from "@components/Button"
 
 export const SignUp = () => {
+    const navigation = useNavigation()
+
+    const handleGoBack = () => {
+        navigation.goBack()
+    }
+
     return (
         <ScrollView 
             contentContainerStyle={{ flexGrow: 1}} 
@@ -14,9 +24,8 @@ export const SignUp = () => {
             automaticallyAdjustKeyboardInsets 
             keyboardDismissMode="on-drag"
             bounces={false}
-            bg="$green700"
             >
-        <VStack flex={1} bg="$gray700" >
+        <VStack flex={1}>
             <Image 
             w={"$full"}
             h={700} 
@@ -41,7 +50,7 @@ export const SignUp = () => {
                     <Button title="Criar e Acessar" />
                  </Center>
 
-                 <Button title="Voltar ao Login" variant="outline" mt="$5" />
+                 <Button title="Voltar ao Login" variant="outline" mt="$5" onPress={handleGoBack} />
                    
 
             </VStack>

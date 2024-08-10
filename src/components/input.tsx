@@ -2,10 +2,13 @@ import { ComponentProps } from "react"
 import { Input as GSInput, InputField } from "@gluestack-ui/themed"
 
 type Props = ComponentProps<typeof InputField> & {
+    errorMessage?: string | null;
+    isInvalid?: boolean;
     isReadOnly?: boolean;
 }
 
-export const Input = ({isReadOnly,...rest}: Props) => {
+export const Input = ({isReadOnly, errorMessage= null, isInvalid= false,...rest}: Props) => {
+    const invalid = errorMessage
     return (
         <GSInput  
          h="$12"  

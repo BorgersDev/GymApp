@@ -1,17 +1,68 @@
+import { useState } from "react"
+
 import { ScrollView, TouchableOpacity } from "react-native"
 
-import { Center, Heading, Text, VStack } from "@gluestack-ui/themed"
+import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
+
+import * as ImagePicker from "expo-image-picker"
+import * as FileSystem from "expo-file-system"
 
 import { ScreenHeader } from "@components/ScreenHeader"
 import { UserPic } from "@components/UserPic"
 import { Input } from "@components/input"
 import { Button } from "@components/Button"
+import { ToastMessage } from "@components/ToastMessage"
 
 
 export const Profile = () => {
+    const [userPicture, setUserPicture] = useState("https://github.com/BorgersDev.png")
+
+    const toast = useToast()
+    const handleUserSelectPic = async () => {
+        try {
+        const selectedPicture = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+            aspect: [4,4],
+            allowsEditing: true
+        })
+
+        
+        if(selectedPicture.canceled) {
+            return
+        }
+
+        const pictureURI = selectedPicture.assets[0].uri
+
+        if(pictureURI) {
+            const pictureInfo = await FileSystem.getInfoAsync(pictureURI) as {
+                size: number
+            }
+            if(pictureInfo.size && (pictureInfo.size /1024 /1024) > 5) {
+                return toast.show({
+                    placement:"top",
+                    render: ({id}) => (
+                        <ToastMessage 
+                            id={id} 
+                            action="error" 
+                            title="Imagem muito grande!" 
+                            description="Escolha uma imagem com o tamanho menor que 5MB" 
+                            onClose={() => toast.close(id)}
+                        />
+                    )
+                })
+            }
+            setUserPicture(pictureURI)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     return (
         <VStack flex={1}>
             <ScreenHeader title="Perfil" />
+
 
             <ScrollView 
                 contentContainerStyle={{flexGrow: 1 ,paddingBottom: 36}} 
@@ -21,11 +72,11 @@ export const Profile = () => {
             >
                 <Center mt="$4" px="$10" >
                     <UserPic 
-                        source={{uri: "https://github.com/BorgersDev.png"}} 
+                        source={{uri: userPicture}} 
                         alt="Foto do usuário" 
                         size="xl"
                     />
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleUserSelectPic} >
                         <Text color="$green500" fontFamily="$heading" fontSize="$md" mt="$2" mb="$8" >
                             Alterar foto
                         </Text>

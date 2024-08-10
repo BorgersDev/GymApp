@@ -6,7 +6,7 @@ type Props = {
 
 export const ScreenHeader = ({title}: Props) => {
     return (
-        <Center bg="$gray600" pb="$6" pt="$16" >
+        <Center bg="$gray600" pb="$6" pt="$14" >
             <Heading color="$gray100" fontSize="$xl" fontFamily="$heading" >
                 {title}
             </Heading>

@@ -3,6 +3,9 @@ import { useNavigation } from "@react-navigation/native"
 import { Center, Heading, Image, Text, VStack, ScrollView } from "@gluestack-ui/themed"
 import { useForm, Controller } from "react-hook-form"
 
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+
 import { AuthNavigationRoutesProps } from "@routes/auth.routes"
 
 import { Input } from "@components/input"
@@ -18,9 +21,16 @@ type FormDataProps = {
     password_confirm: string;
 }
 
+const signUpSchema = yup.object({
+    name: yup.string().required('informe o nome'),
+    email: yup.string().required('Informe o e-mail').email('E-mail inválido')
+})
+
 
 export const SignUp = () => {
-    const { control, handleSubmit, formState : {errors} } =useForm<FormDataProps>();
+    const { control, handleSubmit, formState : {errors} } =useForm<FormDataProps>({
+        resolver: yupResolver(signUpSchema)
+    });
 
     const navigation = useNavigation()
 
@@ -61,33 +71,20 @@ export const SignUp = () => {
                     <Controller 
                         control={control} 
                         name="name"
-                        rules={{
-                            required: 'Informe o nome'
-                        }}
                         render={({field: {onChange, value}}) => (
                             <Input 
                                 placeholder="Nome"  
                                 onChangeText={onChange}
                                 value={value}
+                                errorMessage={errors.name?.message}
                             />
                         )}
                     />
-
-                    { errors.name?.message && (<Text color="$white" >
-                        {errors.name.message}
-                    </Text>)}
                     
 
                     <Controller 
                         control={control} 
                         name="email"
-                        rules={{
-                            required: "Informe o email",
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                message: "E-mail inválido"
-                            }
-                        }}
                         render={({field: {onChange, value}}) => (
                             <Input 
                                 placeholder="E-mail" 
@@ -95,12 +92,10 @@ export const SignUp = () => {
                                 autoCapitalize="none" 
                                 onChangeText={onChange}
                                 value={value}
+                                errorMessage={errors.email?.message}
                             />
                         )}
                     />
-                    { errors.email?.message && (<Text color="$white" >
-                        {errors.email.message}
-                    </Text>)}
 
                     <Controller 
                         control={control} 

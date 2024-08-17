@@ -8,7 +8,7 @@ import { config } from './config/gluestack-ui.config';
 
 import { Routes } from '@routes/index';
 
-import { AuthContext } from '@contexts/AuthContext';
+import { AuthContextProvider } from '@contexts/AuthContext';
 
 import { Loading } from '@components/Loading';
 
@@ -18,18 +18,9 @@ export default function App() {
   return (
     <GluestackUIProvider config={config}>
     
-    <AuthContext.Provider value={{
-      user: {
-        id: '1',
-        name: 'Arthur',
-        email: 'arthur@email.com',
-        avatar: 'arthur.png',
-      }
-    }} >
-      
+    <AuthContextProvider>
       { fontsLoaded ? ( <Routes /> ) :( <Loading /> )}
-
-    </AuthContext.Provider>
+    </AuthContextProvider>
       <StatusBar style="light" />
     </GluestackUIProvider>
   );

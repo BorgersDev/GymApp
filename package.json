@@ -18,7 +18,7 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "axios": "^1.7.4",
-    "expo": "~51.0.26",
+    "expo": "^51.0.28",
     "expo-file-system": "~17.0.1",
     "expo-font": "^12.0.9",
     "expo-image-picker": "~15.0.7",
@@ -35,6 +35,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "@types/react-native": "^0.73.0",
     "react-native-svg-transformer": "^1.5.0",
     "typescript": "5.3.3"
   },

@@ -14,6 +14,7 @@
     "@gluestack-ui/config": "1.1.19",
     "@gluestack-ui/themed": "1.1.34",
     "@hookform/resolvers": "^3.9.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",

@@ -1,26 +1,58 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FlatList } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 
+import { api } from "@services/api"
 import { AppNavigationRoutesProps } from "@routes/app.routes"
 
-import {  Heading, HStack, Text, VStack } from "@gluestack-ui/themed"
+import {  Heading, HStack, Text, useToast, VStack } from "@gluestack-ui/themed"
 
 import { Group } from "@components/Group"
 import { HomeHeader } from "@components/HomeHeader"
 import { ExerciseCard } from "@components/ExerciseCard"
 
+import { AppError } from "@utils/AppError"
+import { ToastMessage } from "@components/ToastMessage"
+
 
 export const Home = () => {
+    const [ groups, setGroups ] = useState<string[]>([])
     const [ exercises, setExercises] = useState(["Puxada frontal", "Remada curvada", "Remada unilateral", "Levantamento terra"])
-    const [ groups, setGroups ] = useState(["Costas", "Bíceps", "Tríceps", "Ombro", "Pernas"])
     const [groupSelected, setGroupSelected] = useState("Costas")
+
+    const toast = useToast();
 
     const navigation = useNavigation<AppNavigationRoutesProps>()
 
     const handleOpenExerciseDetails = () => {
         navigation.navigate("exercise")
     }
+
+    const fetchGroups = async () => {
+        try {
+
+            const response = await api.get('/groups');
+            setGroups(response.data)
+
+        } catch(error) {
+            const isAppError = error instanceof AppError
+            const title = isAppError ? error.message : 'Não foi possível carregar os grupos musculares'
+            toast.show({
+                placement: 'top',
+                render : ({id}) => (
+                    <ToastMessage 
+                        id={id}
+                        title={title}
+                        action="error"
+                        onClose={() => toast.close(id)}
+                    />
+                )
+            })
+        }
+    }
+    useEffect(() => {
+        fetchGroups();
+    },[])
     return (
         <VStack flex={1}>
             <HomeHeader />

@@ -27,6 +27,7 @@ type RoutesParams = {
 
 
 export const Exercise = () => {
+    const [sendingRegister, setSendingRegister] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
 
     const [exerciseDetails, setExerciseDetails] = useState({} as ExerciseDTO)
@@ -65,6 +66,46 @@ export const Exercise = () => {
 
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    const handleRegisterExerciseHistory = async () => {
+        try {
+            setSendingRegister(true)
+
+            await api.post('/history', {exercise_id: exerciseId})
+
+            toast.show({
+                placement: 'top',
+                render: ({id}) => (
+                    <ToastMessage 
+                        id={id}
+                        title="Parabéns, exercício registrado no seu histórico."
+                        action="success"
+                        onClose={() => toast.close(id)}
+                    />
+                )
+            })
+
+            navigation.navigate('history')
+            
+        } catch (error) {
+            const isAppError = error instanceof AppError
+            const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercício'
+            toast.show({
+                placement: 'top',
+                render: ({id}) => (
+                    <ToastMessage 
+                        id={id}
+                        title={title}
+                        action="error"
+                        onClose={() => toast.close(id)}
+                    />
+                )
+            })
+
+        } finally {
+            setSendingRegister(false)
         }
     }
 
@@ -137,7 +178,11 @@ export const Exercise = () => {
                                     </Text>
                                 </HStack>
                             </HStack>
-                            <Button title="Marcar como concluído" />
+                            <Button 
+                                title="Marcar como concluído" 
+                                isLoading={sendingRegister} 
+                                onPress={handleRegisterExerciseHistory}
+                            />
                         </Box>
                         
                     </VStack>

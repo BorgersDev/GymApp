@@ -20,15 +20,15 @@ import { Loading } from "@components/Loading"
 export const Home = () => {
     const [ groups, setGroups ] = useState<string[]>([])
     const [ exercises, setExercises] = useState<ExerciseDTO[]>([])
-    const [groupSelected, setGroupSelected] = useState("Costas")
+    const [groupSelected, setGroupSelected] = useState("costas")
     const [isLoadingExercises, setIsLoadingExercises] = useState(true);
 
     const toast = useToast();
 
     const navigation = useNavigation<AppNavigationRoutesProps>()
 
-    const handleOpenExerciseDetails = () => {
-        navigation.navigate("exercise")
+    const handleOpenExerciseDetails = (exerciseId: string) => {
+        navigation.navigate("exercise", {exerciseId})
     }
 
     const fetchGroups = async () => {
@@ -118,13 +118,14 @@ export const Home = () => {
 
                 {
                     isLoadingExercises ? <Loading /> :
+
                     <FlatList 
 
                     data={exercises} 
                     keyExtractor={(item) => item.id} 
                     renderItem={({item}) => (
                         <ExerciseCard 
-                            onPress={handleOpenExerciseDetails}
+                            onPress={() => handleOpenExerciseDetails(item.id)}
                             data={item} 
                         />
                     )} 

@@ -34,10 +34,10 @@ export const Exercise = () => {
     
     const navigation = useNavigation<AppNavigationRoutesProps>()
     
-    const route = useRoute();
-
     const toast = useToast();
-
+    
+    const route = useRoute();
+    
     const {exerciseId} = route.params as RoutesParams
     
     const handleGoBack = () => {

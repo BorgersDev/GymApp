@@ -10,6 +10,9 @@ import * as yup from 'yup'
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 
+import  defaultUserPhotoImg from '@assets/userPhotoDefault.png'
+
+
 import { ScreenHeader } from "@components/ScreenHeader"
 import { UserPic } from "@components/UserPic"
 import { Input } from "@components/input"
@@ -45,7 +48,6 @@ const profileSchema = yup.object({
 
 export const Profile = () => {
     const [ isUpdating, setIsUpdating] = useState(false);
-    const [userPicture, setUserPicture] = useState("https://github.com/BorgersDev.png")
 
     const toast = useToast()
 
@@ -71,7 +73,7 @@ export const Profile = () => {
 
         
         if(selectedPicture.canceled) {
-            return
+            return;
         }
 
         const pictureURI = selectedPicture.assets[0].uri
@@ -94,7 +96,40 @@ export const Profile = () => {
                     )
                 })
             }
-            setUserPicture(pictureURI)
+            const fileExtension = pictureURI.split('.').pop();
+            
+            const pictureFile = {
+                name : `${user.name}.${fileExtension}`.toLowerCase(),
+                uri: pictureURI,
+                type: `${selectedPicture.assets[0].type}/${fileExtension}`
+            } as any;
+
+            const uploadUserPictureForm = new FormData();
+            uploadUserPictureForm.append('avatar', pictureFile )
+
+            const updatedAvatarResponse = await api.patch('/users/avatar', uploadUserPictureForm, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            const userUpdated = user;
+            userUpdated.avatar = updatedAvatarResponse.data.avatar
+            updateUserProfile(userUpdated);
+
+            toast.show({
+                placement: 'top',
+                render: (({id}) => (
+                    <ToastMessage 
+                        id={id}
+                        title="Foto atualizada"
+                        action="success"
+                        onClose={() => toast.close(id)}
+                    />
+                ))
+            })
+
+            
         }
       } catch (error) {
         console.log(error)
@@ -156,9 +191,10 @@ export const Profile = () => {
             >
                 <Center mt="$4" px="$10" >
                     <UserPic 
-                        source={{uri: userPicture}} 
-                        alt="Foto do usuário" 
-                        size="xl"
+                         source={ user.avatar ? {uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } : defaultUserPhotoImg } 
+                         w="$16"
+                         h="$16"
+                         alt="Imagem do Usuário" 
                     />
                     <TouchableOpacity onPress={handleUserSelectPic} >
                         <Text color="$green500" fontFamily="$heading" fontSize="$md" mt="$2" mb="$8" >

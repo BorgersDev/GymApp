@@ -4,6 +4,8 @@ import { ScrollView, TouchableOpacity } from "react-native"
 
 import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
 
+import {Controller, useForm} from 'react-hook-form'
+
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 
@@ -12,12 +14,31 @@ import { UserPic } from "@components/UserPic"
 import { Input } from "@components/input"
 import { Button } from "@components/Button"
 import { ToastMessage } from "@components/ToastMessage"
+import { useAuth } from "@hooks/useAuth"
 
+type formDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    old_password: string;
+    confirm_password: string;
+}
 
 export const Profile = () => {
     const [userPicture, setUserPicture] = useState("https://github.com/BorgersDev.png")
 
     const toast = useToast()
+
+    const { user } = useAuth();
+
+    const { control } = useForm<formDataProps>({
+        defaultValues: {
+            name: user.name,
+            email: user.email
+
+        }
+    })
+
     const handleUserSelectPic = async () => {
         try {
         const selectedPicture = await ImagePicker.launchImageLibraryAsync({
@@ -83,8 +104,33 @@ export const Profile = () => {
                     </TouchableOpacity>
 
                     <Center w="$full" gap="$3" >
-                        <Input placeholder="Nome" bg="$gray600" />
-                        <Input value="arthur@email.com" bg="$gray600" isReadOnly/>
+
+                        <Controller     
+                            control={control}
+                            name="name"
+                            render={({field: {value, onChange}}) => (
+                                <Input 
+                                    placeholder="Nome" 
+                                    onChangeText={onChange}
+                                    value={value}
+                                    bg="$gray600" 
+                                />
+                            )}
+                        />
+                        <Controller     
+                            control={control}
+                            name="email"
+                            render={({field: {value, onChange}}) => (
+                                <Input 
+                                    placeholder="E-mail"
+                                    onChangeText={onChange}
+                                    value={value}
+                                    isReadOnly
+                                    bg="$gray600" 
+                                />
+                            )}
+                        />
+
                     </Center>
                     <Heading 
                         alignSelf="flex-start"

@@ -8,15 +8,25 @@ type ApiInstanceProps = AxiosInstance & {
 }
 
 const api = axios.create({
-    baseURL: "http://192.168.1.47:3333"
+    baseURL: "http://10.0.0.113:3333"
 }) as ApiInstanceProps
 
-api.registerInterceptTokenManager = SignOut =>  {
-    const InterceptTokenManager = api.interceptors.response.use(response => response, error => {
-        if(error.response && error.response.data) {
-            return Promise.reject(new AppError(error.response.data.message))
+api.registerInterceptTokenManager = signOut =>  {
+    const InterceptTokenManager = api.interceptors.response.use(response => response, requestError => {
+        if(requestError?.response?.status === 401) {
+            if(requestError.response.data?.message === 'token.expired' || requestError.response.data?.message === 'token.invalid') {
+
+            }
+            signOut();
+        }
+
+
+
+
+        if(requestError.response && requestError.response.data) {
+            return Promise.reject(new AppError(requestError.response.data.message))
         } else {
-            return Promise.reject(error)
+            return Promise.reject(requestError)
         }
     });
 

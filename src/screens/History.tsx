@@ -10,6 +10,8 @@ import { HistoryCard } from "@components/HistoryCard"
 import { ScreenHeader } from "@components/ScreenHeader"
 import { AppError } from "@utils/AppError"
 import { ToastMessage } from "@components/ToastMessage"
+import { Loading } from "@components/Loading"
+
 import { HistoryByDayDTO } from "@dtos/HistoryByDay"
 
 
@@ -49,6 +51,10 @@ export const History = () => {
     return (
         <VStack flex={1}>
             <ScreenHeader title="Histórico de Exercícios" />
+
+            
+            
+        {   isLoading ? <Loading /> :
             <SectionList 
             sections={exercises} 
             keyExtractor={item => item.id} 
@@ -72,7 +78,7 @@ export const History = () => {
                 </Text>
             )}
             showsVerticalScrollIndicator={false}
-        />
+        />}
             
         </VStack>
     )

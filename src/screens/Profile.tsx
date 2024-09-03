@@ -252,6 +252,7 @@ export const Profile = () => {
                                     placeholder="Senha antiga" 
                                     onChangeText={onChange}
                                     secureTextEntry 
+                                    textContentType="oneTimeCode"
                                     bg="$gray600" 
                                 />
                             )}
